@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>MathPintar - Latihan Matematik Bentuk Lazim</title>
-    <!-- DIPERBAIKI: Menggunakan Tailwind CSS v3 Play CDN untuk kestabilan penuh merentas semua peranti -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@3"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -56,7 +55,6 @@
 
         <main class="flex-grow p-4 flex flex-col justify-start items-center w-full overflow-y-auto touch-pan-y">
 
-            <!-- 1. LOGIN SELECTION -->
             <div v-if="screen === 'login-selection'" class="w-full space-y-6 text-center my-auto">
                 <div class="bg-gradient-to-b from-emerald-400 to-emerald-500 p-6 rounded-3xl border-4 border-emerald-300 shadow-inner text-white">
                     <span class="text-6xl block mb-2">🧠</span>
@@ -73,7 +71,6 @@
                 </div>
             </div>
 
-            <!-- 2. LOGIN CHILD -->
             <div v-if="screen === 'login-child'" class="w-full space-y-6 text-center my-auto">
                 <div class="text-left">
                     <button @click="screen = 'login-selection'" class="text-emerald-600 font-bold text-sm">⬅️ Kembali</button>
@@ -90,7 +87,6 @@
                 </button>
             </div>
 
-            <!-- 3. LOGIN PARENT -->
             <div v-if="screen === 'login-parent'" class="w-full space-y-4 text-center my-auto">
                 <div class="text-left">
                     <button @click="screen = 'login-selection'" class="text-emerald-600 font-bold text-sm">⬅️ Kembali</button>
@@ -117,7 +113,6 @@
                 </p>
             </div>
 
-            <!-- 4. PAPARAN UTAMA PARENT (PARENT DASHBOARD) -->
             <div v-if="parentUser && screen === 'parentDashboard'" class="w-full space-y-6 my-auto">
                 <div class="bg-purple-600 text-white p-5 rounded-3xl border-4 border-purple-400 shadow-inner text-center">
                     <span class="text-5xl block mb-2">👨‍👩‍👦</span>
@@ -134,14 +129,12 @@
                 </div>
             </div>
 
-            <!-- 5. PAPARAN URUS AKAUN KELUARGA -->
             <div v-if="parentUser && screen === 'parentManage'" class="w-full space-y-5 text-left">
                 <div class="flex justify-between items-center">
                     <button @click="screen = 'parentDashboard'; playSound('click');" class="text-purple-600 font-bold text-sm">⬅️ Kembali ke Menu</button>
                     <span class="text-xs font-bold bg-purple-100 text-purple-700 px-3 py-1 rounded-full">Urus Keluarga</span>
                 </div>
 
-                <!-- Tambah Profil Anak -->
                 <div class="bg-white p-4 rounded-2xl border-2 border-purple-200 shadow-sm space-y-3">
                     <h3 class="font-black text-sm text-slate-700 flex items-center gap-1">➕ Tambah Profil Anak</h3>
                     <div class="flex gap-2">
@@ -150,7 +143,6 @@
                     </div>
                 </div>
 
-                <!-- List Profil Anak -->
                 <div class="space-y-3">
                     <h3 class="font-black text-sm text-slate-700 px-1">👦 Senarai Profil & PIN Anak</h3>
                     <div v-if="childProfiles.length === 0" class="text-center p-6 text-xs text-slate-400 font-bold bg-slate-50 rounded-xl border border-dashed border-slate-300">
@@ -177,14 +169,12 @@
                 </div>
             </div>
 
-            <!-- 6. PAPARAN REKOD PRESTASI PARENT -->
             <div v-if="parentUser && screen === 'parentReports'" class="w-full space-y-4 text-left">
                 <div class="flex justify-between items-center">
                     <button @click="screen = 'parentDashboard'; selectedChildForReport = ''; playSound('click');" class="text-pink-600 font-bold text-sm">⬅️ Kembali ke Menu</button>
                     <span class="text-xs font-bold bg-pink-100 text-pink-700 px-3 py-1 rounded-full">Rekod Prestasi</span>
                 </div>
 
-                <!-- Pilih Nama Anak Dahulu -->
                 <div class="bg-white p-4 rounded-2xl border-2 border-pink-200 shadow-sm space-y-2">
                     <label class="block text-xs font-black text-slate-600 uppercase tracking-wide">Sila Pilih Nama Anak:</label>
                     <select v-model="selectedChildForReport" @change="playSound('click')" class="w-full p-2.5 border-2 border-slate-300 rounded-xl bg-white text-sm font-bold uppercase focus:outline-none focus:border-pink-500">
@@ -195,7 +185,6 @@
                     </select>
                 </div>
 
-                <!-- Automatik Keluar List Skor-Skor Anak Jika Nama Anak Dipilih -->
                 <div v-if="selectedChildForReport" class="space-y-4">
                     <div class="grid grid-cols-2 gap-2 text-center">
                         <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-200 shadow-sm">
@@ -249,7 +238,6 @@
                 </div>
             </div>
 
-            <!-- Menu Tetapan Kuiz Anak -->
             <div v-if="user && screen === 'menu'" class="w-full space-y-5 my-auto">
                 <div class="bg-emerald-50 border-2 border-emerald-200 p-4 rounded-2xl">
                     <p class="text-lg font-bold text-slate-700">Hai, <span class="text-emerald-600 font-black text-xl uppercase">{{ user }}</span>! 👋</p>
@@ -291,7 +279,6 @@
                 </button>
             </div>
 
-            <!-- Gameplay Soalan -->
             <div v-if="screen === 'gameplay' || screen === 'correction'" class="w-full flex flex-col justify-between items-center space-y-4">
                 <div class="w-full bg-slate-100 p-3 rounded-2xl border-2 border-slate-200 flex justify-between items-center text-xs font-bold text-slate-600">
                     <div v-if="screen === 'gameplay'">Soalan: <span class="text-emerald-600 text-sm">{{ currentQuestionIndex + 1 }}</span> / {{ config.totalQuestions }}</div>
@@ -301,9 +288,7 @@
                     <button v-else @click="exitCorrection" class="bg-slate-700 text-white px-2.5 py-1 rounded-md text-[11px]">Batal</button>
                 </div>
 
-                <!-- Paparan Papan Hitung Matematik -->
                 <div class="w-full flex-grow bg-amber-50 p-6 rounded-3xl border-4 border-amber-200 shadow-inner min-h-[300px] flex justify-center items-center relative math-font">
-                    <!-- Tambah / Darab -->
                     <div v-if="config.operation === 'Tambah' || config.operation === 'Darab'" class="flex items-center justify-center relative">
                         <div class="absolute left-[-45px] text-4xl font-bold text-slate-600 bottom-[85px]">{{ config.operation === 'Tambah' ? '+' : '×' }}</div>
                         <div class="flex">
@@ -319,7 +304,6 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Tolak -->
                     <div v-if="config.operation === 'Tolak'" class="flex items-center justify-center relative">
                         <div class="absolute left-[-45px] text-4xl font-bold text-slate-600 bottom-[85px]">-</div>
                         <div class="flex">
@@ -337,7 +321,6 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Bahagi -->
                     <div v-if="config.operation === 'Bahagi'" class="flex items-center justify-center font-bold pt-6">
                         <div class="text-4xl text-slate-700 pr-3 pt-14">{{ currentQuestion.num2 }}</div>
                         <div class="border-t-4 border-l-4 border-slate-800 rounded-tl-2xl pl-2 pt-2 flex">
@@ -363,7 +346,6 @@
                 </button>
             </div>
 
-            <!-- Keputusan Latihan (Results) -->
             <div v-if="screen === 'results'" class="w-full space-y-5 py-2 my-auto">
                 <div class="bg-gradient-to-b from-yellow-300 to-amber-400 p-5 rounded-3xl shadow-xl border-4 border-white text-slate-900 relative">
                     <span class="text-5xl block mb-1">🎉</span>
@@ -410,7 +392,6 @@
                 </div>
             </div>
 
-            <!-- Rekod Prestasi (Mod Akses Pasif Kanak-kanak) -->
             <div v-if="user && screen === 'reports'" class="w-full space-y-4 text-left">
                 <div class="flex justify-between items-center">
                     <h2 class="text-2xl font-black text-slate-800 font-kids">📊 Laporan Prestasi</h2>
@@ -624,7 +605,7 @@
                     } catch (error) {
                         alert("Ralat Pengesahan: " + error.message);
                         playSound('wrong');
-                    } fill_out_loading: finally {
+                    } finally {
                         authLoading.value = false;
                     }
                 };
