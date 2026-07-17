@@ -600,11 +600,21 @@
 
                         if (snapshot.exists()) {
                             const allUsers = snapshot.val();
-                            for (const parentUid in allUsers) {
-                                // Cari padanan e-mel dalam senarai data (jika disimpan) atau buat semakan login terus jika lulus
-                                isWhitelisted = true; 
-                                break;
-                            }
+                          const handleParentAuth = async () => {
+    if (!parentEmail.value || !parentPassword.value) return;
+    authLoading.value = true;
+    try {
+        // Log masuk terus menggunakan Firebase Auth (Cepat & Selamat)
+        await signInWithEmailAndPassword(fAuth, parentEmail.value, parentPassword.value);
+        user.value = null; 
+    } catch (error) {
+        // Mengendalikan ralat jika e-mel tiada dalam sistem atau kata laluan salah
+        alert("Akses Ditolak: E-mel tidak berdaftar atau kata laluan salah.");
+        playSound('wrong');
+    } finally {
+        authLoading.value = false;
+    }
+};
                         }
 
                         // Cuba log masuk terus menggunakan Firebase Auth. 
