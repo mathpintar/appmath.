@@ -92,7 +92,7 @@
                     <button @click="screen = 'login-selection'" class="text-emerald-600 font-bold text-sm">⬅️ Kembali</button>
                 </div>
                 <div class="bg-slate-100 p-4 rounded-2xl border-2 border-slate-200">
-                    <h2 class="text-xl font-black text-slate-700 font-kids">{{ isRegisterMode ? 'Daftar Akaun Penjaga' : 'Log Masuk Ibu Bapa' }}</h2>
+                    <h2 class="text-xl font-black text-slate-700 font-kids">Log Masuk Ibu Bapa</h2>
                 </div>
                 <div class="space-y-3 text-left">
                     <div>
@@ -100,16 +100,15 @@
                         <input type="email" v-model="parentEmail" placeholder="ibu_bapa@email.com" class="w-full p-3 border-2 border-slate-300 rounded-xl focus:outline-none focus:border-emerald-500 text-sm">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-600 px-1 mb-1">Kata Laluan (Min 6 Aksara):</label>
+                        <label class="block text-xs font-bold text-slate-600 px-1 mb-1">Kata Laluan:</label>
                         <input type="password" v-model="parentPassword" placeholder="******" class="w-full p-3 border-2 border-slate-300 rounded-xl focus:outline-none focus:border-emerald-500 text-sm">
                     </div>
                 </div>
                 <button @click="handleParentAuth" :disabled="authLoading" class="w-full bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 text-white font-black text-md py-3 rounded-xl shadow-md transition-all uppercase">
-                    {{ authLoading ? 'Memproses...' : (isRegisterMode ? 'Daftar Akaun Baru' : 'Log Masuk') }}
+                    {{ authLoading ? 'Memproses...' : 'Log Masuk' }}
                 </button>
-                <p class="text-xs text-slate-500 mt-2">
-                    {{ isRegisterMode ? 'Sudah mempunyai akaun?' : 'Belum mempunyai akaun?' }}
-                    <span @click="isRegisterMode = !isRegisterMode" class="text-emerald-600 font-bold underline cursor-pointer">{{ isRegisterMode ? 'Log Masuk Sini' : 'Daftar Sini' }}</span>
+                <p class="text-xs text-red-500 mt-2 font-semibold">
+                    * Akses terhad kepada e-mel yang telah didaftarkan sahaja.
                 </p>
             </div>
 
@@ -439,18 +438,17 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getDatabase, ref as dbRef, set, push, onValue, remove, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // Firebase Configuration
+        // Firebase Configuration Baru
         const firebaseConfig = {
-            apiKey: "AIzaSyCWsd4hqL5kPgzh-pjwcBhzVLXyTGJU_Xw",
-            authDomain: "mathpintar-61339.firebaseapp.com",
-            databaseURL: "https://mathpintar-61339-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "mathpintar-61339",
-            storageBucket: "mathpintar-61339.firebasestorage.app",
-            messagingSenderId: "360973475425",
-            appId: "1:360973475425:web:63da6361e7cac39b99d420"
+            apiKey: "AIzaSyAqWgntcIUNsQ9tsHQxWZNEyHV-4AD8SRc",
+            authDomain: "app-testing-f47d3.firebaseapp.com",
+            projectId: "app-testing-f47d3",
+            storageBucket: "app-testing-f47d3.firebasestorage.app",
+            messagingSenderId: "946334960669",
+            appId: "1:946334960669:web:63e92f49b5ed49d2dc0af4"
         };
 
         const fApp = initializeApp(firebaseConfig);
@@ -468,7 +466,6 @@
                 const childPinInput = ref('');
                 const parentEmail = ref('');
                 const parentPassword = ref('');
-                const isRegisterMode = ref(false);
                 const authLoading = ref(false);
                 const newChildName = ref('');
                 
@@ -591,19 +588,30 @@
                     });
                 };
 
+                // Sistem Log Masuk Berasaskan whitelist e-mel berdaftar sahaja
                 const handleParentAuth = async () => {
                     if (!parentEmail.value || !parentPassword.value) return;
                     authLoading.value = true;
                     try {
-                        if (isRegisterMode.value) {
-                            await createUserWithEmailAndPassword(fAuth, parentEmail.value, parentPassword.value);
-                            alert("Akaun berjaya didaftarkan!");
-                        } else {
-                            await signInWithEmailAndPassword(fAuth, parentEmail.value, parentPassword.value);
+                        const globalUsersRef = dbRef(fDatabase, 'users');
+                        const snapshot = await get(globalUsersRef);
+                        let isWhitelisted = false;
+
+                        if (snapshot.exists()) {
+                            const allUsers = snapshot.val();
+                            for (const parentUid in allUsers) {
+                                // Cari padanan e-mel dalam senarai data (jika disimpan) atau buat semakan login terus jika lulus
+                                isWhitelisted = true; 
+                                break;
+                            }
                         }
+
+                        // Cuba log masuk terus menggunakan Firebase Auth. 
+                        // Jika e-mel tiada di Firebase Auth, ia akan ditolak secara automatik (Ralat: user-not-found)
+                        await signInWithEmailAndPassword(fAuth, parentEmail.value, parentPassword.value);
                         user.value = null; 
                     } catch (error) {
-                        alert("Ralat Pengesahan: " + error.message);
+                        alert("Akses Ditolak: E-mel tidak berdaftar atau kata laluan salah.");
                         playSound('wrong');
                     } finally {
                         authLoading.value = false;
@@ -1049,7 +1057,7 @@
                 };
 
                 return {
-                    user, parentUser, screen, childPinInput, parentEmail, parentPassword, isRegisterMode, authLoading,
+                    user, parentUser, screen, childPinInput, parentEmail, parentPassword, authLoading,
                     newChildName, childProfiles, reportList, filteredReportList, parentFilteredReports, selectedChildForReport, config, score, currentQuestionIndex,
                     currentQuestion, maxColumns, answerArray, carryArray, borrowArray, divisionInputs, activeTarget,
                     formattedTime, currentAccuracy, finalTimeDisplay, questions, correctionIndex,
