@@ -589,18 +589,8 @@
                     });
                 };
 
-                // Sistem Log Masuk Berasaskan whitelist e-mel berdaftar sahaja
-                const handleParentAuth = async () => {
-                    if (!parentEmail.value || !parentPassword.value) return;
-                    authLoading.value = true;
-                    try {
-                        const globalUsersRef = dbRef(fDatabase, 'users');
-                        const snapshot = await get(globalUsersRef);
-                        let isWhitelisted = false;
-
-                        if (snapshot.exists()) {
-                            const allUsers = snapshot.val();
-                          const handleParentAuth = async () => {
+              // Sistem Log Masuk Ibu Bapa / Guru
+const handleParentAuth = async () => {
     if (!parentEmail.value || !parentPassword.value) return;
     authLoading.value = true;
     try {
@@ -609,6 +599,7 @@
         user.value = null; 
     } catch (error) {
         // Mengendalikan ralat jika e-mel tiada dalam sistem atau kata laluan salah
+        console.error("Firebase Auth Error:", error);
         alert("Akses Ditolak: E-mel tidak berdaftar atau kata laluan salah.");
         playSound('wrong');
     } finally {
