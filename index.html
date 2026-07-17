@@ -441,11 +441,10 @@
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getDatabase, ref as dbRef, set, push, onValue, remove, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    
         const firebaseConfig = {
             apiKey: "AIzaSyAqWgntcIUNsQ9tsHQxWZNEyHV-4AD8SRc",
             authDomain: "app-testing-f47d3.firebaseapp.com",
-            databaseURL: "https://app-testing-f47d3-default-rtdb.asia-southeast1.firebasedatabase.app", // 
+            databaseURL: "https://app-testing-f47d3-default-rtdb.asia-southeast1.firebasedatabase.app", 
             projectId: "app-testing-f47d3",
             storageBucket: "app-testing-f47d3.firebasestorage.app",
             messagingSenderId: "946334960669",
@@ -589,30 +588,16 @@
                     });
                 };
 
-              // Sistem Log Masuk Ibu Bapa / Guru
-const handleParentAuth = async () => {
-    if (!parentEmail.value || !parentPassword.value) return;
-    authLoading.value = true;
-    try {
-        // Log masuk terus menggunakan Firebase Auth (Cepat & Selamat)
-        await signInWithEmailAndPassword(fAuth, parentEmail.value, parentPassword.value);
-        user.value = null; 
-    } catch (error) {
-        // Mengendalikan ralat jika e-mel tiada dalam sistem atau kata laluan salah
-        console.error("Firebase Auth Error:", error);
-        alert("Akses Ditolak: E-mel tidak berdaftar atau kata laluan salah.");
-        playSound('wrong');
-    } finally {
-        authLoading.value = false;
-    }
-};
-                        }
-
-                        // Cuba log masuk terus menggunakan Firebase Auth. 
-                        // Jika e-mel tiada di Firebase Auth, ia akan ditolak secara automatik (Ralat: user-not-found)
+                // Kod Log Masuk Ibu Bapa yang telah dibetulkan & dipermudahkan
+                const handleParentAuth = async () => {
+                    if (!parentEmail.value || !parentPassword.value) return;
+                    authLoading.value = true;
+                    try {
+                        // Log masuk terus menggunakan Firebase Auth (Cepat & Selamat)
                         await signInWithEmailAndPassword(fAuth, parentEmail.value, parentPassword.value);
                         user.value = null; 
                     } catch (error) {
+                        console.error("Firebase Auth Error:", error);
                         alert("Akses Ditolak: E-mel tidak berdaftar atau kata laluan salah.");
                         playSound('wrong');
                     } finally {
